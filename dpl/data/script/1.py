@@ -14,4 +14,3 @@ def prime(n):
         if memo[i]:
             print(i)
 prime(101)
-
