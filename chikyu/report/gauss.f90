@@ -1,33 +1,36 @@
 program gauss
   implicit none
-  DOUBLE PRECISION, dimension(4,4) ::a, b, c
-  DOUBLE PRECISION, dimension(4) :: mnum, l, max,  x
-  DOUBLE PRECISION :: lk(4), li(4)
-  DOUBLE PRECISION :: ans, maxnum
+  REAL, dimension(4,4) :: a, b
+  REAL, dimension(1,4) :: c
+  REAL, dimension(4,1) :: mnum, x, tmp
+  REAL :: ans, maxnum, temp
   INTEGER :: i, j, k(1)
-  a = 1
+  a = reshape( (/10, 1, 4, 0, 1, 10, 5, -1, 4, 5, 10, 7, 0, -1, 7, 9/), (/4, 4/) )
+  c = reshape( (/15, 15, 26, 15/), (/1,4/) )  
+  tmp = reshape( (/0, 0, 0, 0/), (/4,1/) )
 
-  do i = 1, 4,1
-  ! a is matrix, and x is where to start
-  ! this is for scaling
-    l = ABS(a(:, i))
-    maxnum = MAXVAL(l)
-    !list for remembering max value
+  do i = 1, 4, 1
+  ! a is matrix, 
+  ! scaling
+    maxnum = MAXVAL(abs(a(:, i)))
     a(:, i) = a(:, i) / maxnum
-    mnum(i) = maxnum
+    ! list for remembering max value
+    mnum(i,1) = maxnum
   end do
 
   do i = 1, 3, 1
-    ! this is for pivoting
-    max = a(i, :)  ! remember max value
-    k = maxloc(max)
-    li = a(:, i)
-    lk = a(:, k(1))
-    a(:,k(1)) = li
-    a(:, i) = lk
+    ! pivote
+    k = maxloc(a(i, i:))
+    ! swap row
+    tmp = a(:, i)
+    a(:, i) = a(:, i+k(1))
+    a(:, i+k(1)) = tmp
+    temp = c(1, i)
+    c(1, i) = c(1, i+k(1))
+    c(1, i+k(1)) = temp
     
-    ! this is for deleteing
-    if (a(i,i) /= 0.0 .and. i+1 /= 4) then
+    ! delete
+    if (a(i,i) /= 0.0 .and. i /= 4) then
       do j = i + 1, 4
         if (a(i,i) /= 0.0 .and. a(i,j) /= 0.0) then
           b(i, j) = -a(i, j) / a(i, i)
@@ -38,15 +41,14 @@ program gauss
   end do
 
   ans = 0
-  x = 0
 
-!  do i = 4, 1, -1
-!    ans = (c(:,i) - SUM(/ (a(j, 1) * x(j) /), j = i, n)/) / a(i,i)
-!    x(i) = ans
-!    ans = 0
-!  end do
+  do i = 4, 1, -1
+    ans = c(1,i) - SUM((/ (a(j, 2) * x(1,j) , j = i, 4) /)) / a(i,i)
+    x(i,1) = ans
+    ans = 0
+  end do
 
-  print *, x
+print *, x
 
 end program gauss
 
