@@ -1,22 +1,26 @@
 import numpy as np
-import matplotlib.pyplot as plt
+
+
+def df(x, t):
+    return (x + (x**2 + t**2)**0.5)/t
+
+
+def runge_kutta(x, t, df, dt):
+    k1h = dt * df(x, t)
+    k2h = dt * df(x + k1h/2, t + dt/2)
+    k3h = dt * df(x + k2h/2, t + dt/2)
+    k4h = dt * df(x + k3h, t + dt)
+    x_new = x + (k1h + 2*k2h + 2*k3h + k4h)/6
+    return x_new
+
 
 dt = 0.01
-dx = 0.01
+x = 0
+t = 1
 
+for i in range(1000):
+    x = runge_kutta(x, t, df, dt)
+    t = t + dt
 
-def u(x, t):
-  if x >= 1:
-    return u(x-1, t)
-  elif t ==0:
-    return (np.sin(2*np.pi*x))**2
-  else:
-
-
-def runge_kutta(x, t, h):
-k1 = h * f(x,t)
-k2 = h * f(x + k1/2, t + h/2)
-k3 = h * f(x + k2/2, t + h/2)
-k4 = h * f(x + k3, t + h)
-return x + (k1 + 2*k2 + 2*k3 + k4)/6
+print(x)
 
