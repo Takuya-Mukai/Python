@@ -2,26 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# def u(x):
-#     if x < 1:
-#         return np.sin(np.pi*x)**100
-#     if x >= 1:
-#         return u(x-1)
-
-
-def du(u):
+def du_upwind(u):
     du_new = np.zeros(len(u))
     for i in range(len(u)):
         if i == 0:
-            du_new[i] = (u[i] - u[len(u)-2])/dx
+            du_new[i] = -(u[len(u)-1] - u[len(u)-2])/dx
         else:
-            du_new[i] = (u[i] - u[i-1])/dx
+            du_new[i] = -(u[i] - u[i-1])/dx
     return du_new
 
-    # return (u[0:len(u)] - u[2:len(u)+2])/dx
 
-
-def runge_kutta(u):
+def runge_kutta(u, du):
     k1 = dt*du(u)
     k2 = dt*du(u + 0.5 * k1)
     k3 = dt*du(u + 0.5 * k2)
@@ -30,12 +21,16 @@ def runge_kutta(u):
 
 
 dx = 0.01
-dt = 0.005
+dt = 0.01
 x = np.linspace(0, 1, 101)
 
 u = np.sin(np.pi*x)**100
 plt.plot(x, u)
-plt.show()
-for i in range(20):
-    u = runge_kutta(u)
+for i in range(1,100):
+    u = runge_kutta(u, du_upwind)
+    # if i % 5 == 0:
+    #     plt.plot(x, u)
 
+plt.plot(x, u)
+
+plt.savefig('ode.png')
