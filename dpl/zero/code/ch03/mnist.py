@@ -6,21 +6,15 @@ import numpy as np
 from tensorflow.keras.datasets import mnist  # tf.kerasを使う場合（通常）
 from PIL import Image
 import pickle
-import common.function as sigmoid, softmax
+from common.function import sigmoid, softmax
 
 # from keras.datasets import mnist
 # tf.kerasではなく、Kerasを使う必要がある場合はこちらを有効にする
-(x_train, t_train), (x_test, t_test) = mnist.load_data()
-print(x_train.shape)
 
 
 def img_show(img):
     pil_img = Image.fromarray(np.uint8(img))
     pil_img.show()
-
-
-copy_x_train = x_train.copy().reshape(60000, 784)
-img_show(x_train[0])
 
 
 def get_data():
@@ -40,11 +34,21 @@ def predict(network, x):
     b1, b2, b3 = network["b1"], network["b2"], network["b3"]
     a1 = np.dot(x, W1) + b1
     z1 = sigmoid(a1)
-    a1 = np.dot(z1, W2) + b2
-    z2 = sigmoid(a1)
+    a2 = np.dot(z1, W2) + b2
+    z2 = sigmoid(a2)
     a3 = np.dot(z2, W3) + b3
     y = softmax(a3)
     return y
 
 
+accuracy_cnt = 0
+x, t = get_data()
+x = x.reshape(10000, 1, 784)
+network = init_network()
+for i in range(len(x)):
+    y = predict(network, x[i])
+    p = np.argmax(y)
+    if p != t[i]:
+        accuracy_cnt += 1
 
+print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
