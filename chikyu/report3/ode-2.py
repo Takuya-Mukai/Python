@@ -9,7 +9,6 @@ def du(x, y, u, v):
 def dv(x, y, u, v):
     return -y/(x**2+y**2)**(3/2)
 
-dt = 0.01
 def runge_kutta(x, y, u, v, dx, dy, du, dv, dt):
     k1x = dx(x, y, u, v)*dt
     k1y = dy(x, y, u, v)*dt
@@ -39,18 +38,26 @@ def runge_kutta(x, y, u, v, dx, dy, du, dv, dt):
     return x, y, u, v
 
 
-x = np.zeros(1000)
-y = np.zeros(1000)
-u = np.zeros(1000)
-v = np.zeros(1000)
-dt = 0.01
+dt = 0.001
+x = np.zeros(int(1000/dt))
+y = np.zeros(int(1000/dt))
+u = np.zeros(int(1000/dt))
+v = np.zeros(int(1000/dt))
+E = np.zeros(int(1000/dt))
+t = np.linspace(0, 1000-dt, int(1000/dt))
 x[0] = 3
 y[0] = 0
 u[0] = 0.3
 v[0] = 0.2
-for i in range(1000-1):
+for i in range(len(x)-1):
     x[i+1], y[i+1], u[i+1], v[i+1] = runge_kutta(x[i], y[i], u[i], v[i], dx, dy, du, dv, dt)
-
+E = 0.5*(u**2+v**2)-1/np.sqrt(x**2+y**2)
 plt.figure()
-plt.plot(x, y)
+plt.plot(x, y, label = 'dt = {}'.format(dt))
+plt.legend()
 plt.savefig('ode-2.png')
+plt.figure()
+plt.plot(t, E, label = 'dt = {}'.format(dt))
+plt.legend()
+plt.savefig('ode-2-E.png')
+

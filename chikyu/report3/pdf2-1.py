@@ -34,21 +34,23 @@ def runge_kutta(u, scheme, dt):
     return u_new
 
 
-
+#make figure
 x = np.linspace(0, 1, 101)
 dx = 0.01
 dt = 0.01
 u = np.zeros(101)
+#define initial condition
 for i in range(100):
     u[i] = np.sin(np.pi*x[i])**100
 plt.figure()
 plt.plot(x, u)
-
+#calculate by runge-kutta method
 for i in range(100):
     u = runge_kutta(u, central, dt)
 plt.plot(x, u)
 plt.savefig("pde2-1-central.png")
 
+# do same thing by upwind method
 x = np.linspace(0, 1, 101)
 dx = 0.01
 dt = 0.01

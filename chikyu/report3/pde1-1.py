@@ -15,6 +15,7 @@ def boundary_condition(x, y):
     else:
         return 0
 
+#initializetion
 x = np.linspace(0, 1, 101)
 y = np.linspace(0, 1, 101)
 u = np.zeros((101, 101), dtype = float)
@@ -25,6 +26,8 @@ for i in range(101):
 
 diff = 1.0
 trial = 0
+
+#repeat until the difference is less than 1e-6
 while diff > 1e-6:
     u_new = u.copy()
     trial +=1
@@ -38,7 +41,7 @@ while diff > 1e-6:
     print(trial, diff, np.abs(u-u_new).max())
     u = u_new
 
-
+# plt the result
 fig = plt.figure()
 plt.pcolor(x, y, u)
 plt.colorbar()
