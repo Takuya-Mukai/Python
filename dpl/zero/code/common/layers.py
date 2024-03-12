@@ -1,5 +1,7 @@
 import numpy as np
-from functioins import softmax, cross_entropy_error
+import sys, os
+sys.path.append(os.pardir)
+from common.functions import softmax, cross_entropy_error
 
 
 class Relu:
@@ -7,8 +9,8 @@ class Relu:
         self.mask = None
 
     def forward(self, x):
-        self.mask = (x <= 0)
-        out = x.copy
+        self.mask = x <= 0
+        out = x.copy()
         out[self.mask] = 0
 
         return out
@@ -18,6 +20,9 @@ class Relu:
         dx = dout
         return dx
 
+r = Relu()
+x = np.random.randn(2,4)
+print(r.forward(x))
 
 class Sigmoid:
     def __init__(self):
@@ -48,7 +53,7 @@ class SoftmaxWithLoss:
 
     def backward(self, dout=1):
         batch_size = self.t.shape[0]
-        dx = (self.y-self.t) / batch_size
+        dx = (self.y - self.t) / batch_size
         return dx
 
 
@@ -72,3 +77,9 @@ class Affine:
         self.dW = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axis=0)
         return dx
+
+
+s = SoftmaxWithLoss()
+x = np.array([[1, 2, 3], [4, 5, 6]])
+t = np.array([[1, 0, 0], [0, 1, 0]])
+print(s.forward(x, t))
